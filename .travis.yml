@@ -2,15 +2,15 @@ language: ruby
 
 matrix:
   include:
-    - name: "RuboCop lint on pre-installed Ruby version"
-      rvm: 2.5.3 # Pre-installed Ruby version
-      before_install:
-        - gem install bundler
-      script: bundle exec rake rubocop # ONLY lint once, first
-    - rvm: 2.3.5
-    - rvm: 2.4.6
-    - rvm: 2.5.5
-    - rvm: 2.6.3
+    # - name: "RuboCop lint on pre-installed Ruby version"
+    #   rvm: 2.5.3 # Pre-installed Ruby version
+    #   before_install:
+    #     - gem install bundler
+    #   script: bundle exec rake rubocop # ONLY lint once, first
+    # - rvm: 2.3.5
+    # - rvm: 2.4.6
+    # - rvm: 2.5.5
+    # - rvm: 2.6.3
     - name: "jruby-9.1.8.0 on OpenJDK 8"
       rvm: jruby-9.1.8.0
       env:
