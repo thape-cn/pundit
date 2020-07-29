@@ -21,6 +21,10 @@ class PostPolicy < Struct.new(:user, :post)
     def resolve
       scope.published
     end
+
+    def unpublished
+      scope.unpublished
+    end
   end
 
   def update?
@@ -51,6 +55,10 @@ end
 class Post < Struct.new(:user)
   def self.published
     :published
+  end
+
+  def self.unpublished
+    :unpublished
   end
 
   def self.read

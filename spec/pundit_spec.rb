@@ -78,6 +78,10 @@ RSpec.describe Pundit do
       expect(Pundit.policy_scope(user, Post)).to eq :published
     end
 
+    it "returns an instantiated policy scope given the method to call on the scope" do
+      expect(Pundit.policy_scope(user, Post, :unpublished)).to eq :unpublished
+    end
+
     it "returns an instantiated policy scope given an active model class" do
       expect(Pundit.policy_scope(user, Comment)).to eq CommentScope.new(Comment)
     end
@@ -122,6 +126,10 @@ RSpec.describe Pundit do
   describe ".policy_scope!" do
     it "returns an instantiated policy scope given a plain model class" do
       expect(Pundit.policy_scope!(user, Post)).to eq :published
+    end
+
+    it "returns an instantiated policy scope given the method to call on the scope" do
+      expect(Pundit.policy_scope!(user, Post, :unpublished)).to eq :unpublished
     end
 
     it "returns an instantiated policy scope given an active model class" do
@@ -536,6 +544,10 @@ RSpec.describe Pundit do
 
     it "allows policy scope class to be overriden" do
       expect(controller.policy_scope(Post, policy_scope_class: PublicationPolicy::Scope)).to eq :published
+    end
+
+    it "returns an instantiated policy scope when a scope method is provided" do
+      expect(controller.policy_scope(Post, :unpublished)).to eq :unpublished
     end
 
     it "throws an exception if the given policy can't be found" do
