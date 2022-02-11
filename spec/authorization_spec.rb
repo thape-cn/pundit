@@ -145,6 +145,10 @@ describe Pundit::Authorization do
       expect(policy.post).to eq post
     end
 
+    it "returns an instantiated policy scope when a scope method is provided" do
+      expect(controller.policy_scope(Post, :unpublished)).to eq :unpublished
+    end
+
     it "throws an exception if the given policy can't be found" do
       expect { controller.policy(article) }.to raise_error(Pundit::NotDefinedError)
     end

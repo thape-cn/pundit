@@ -93,9 +93,10 @@ module Pundit
     # @see https://github.com/varvet/pundit#scopes
     # @param user [Object] the user that initiated the action
     # @param scope [Object] the object we're retrieving the policy scope for
+    # @param method [Symbol] the method to call on the scope. Defaults to :resolve.
     # @raise [InvalidConstructorError] if the policy constructor called incorrectly
     # @return [Scope{#resolve}, nil] instance of scope class which can resolve to a scope
-    def policy_scope(user, scope)
+    def policy_scope(user, scope, method = :resolve)
       policy_scope_class = PolicyFinder.new(scope).scope
       return unless policy_scope_class
 
@@ -105,7 +106,7 @@ module Pundit
         raise InvalidConstructorError, "Invalid #<#{policy_scope_class}> constructor is called"
       end
 
-      policy_scope.resolve
+      policy_scope.public_send(method)
     end
 
     # Retrieves the policy scope for the given record.
@@ -113,10 +114,11 @@ module Pundit
     # @see https://github.com/varvet/pundit#scopes
     # @param user [Object] the user that initiated the action
     # @param scope [Object] the object we're retrieving the policy scope for
+    # @param method [Symbol] the method to call on the scope. Defaults to :resolve.
     # @raise [NotDefinedError] if the policy scope cannot be found
     # @raise [InvalidConstructorError] if the policy constructor called incorrectly
     # @return [Scope{#resolve}] instance of scope class which can resolve to a scope
-    def policy_scope!(user, scope)
+    def policy_scope!(user, scope, method = :resolve)
       policy_scope_class = PolicyFinder.new(scope).scope!
       return unless policy_scope_class
 
@@ -126,7 +128,7 @@ module Pundit
         raise InvalidConstructorError, "Invalid #<#{policy_scope_class}> constructor is called"
       end
 
-      policy_scope.resolve
+      policy_scope.public_send(method)
     end
 
     # Retrieves the policy for the given record.
@@ -167,8 +169,8 @@ module Pundit
 
   # @api private
   module Helper
-    def policy_scope(scope)
-      pundit_policy_scope(scope)
+    def policy_scope(scope, method = :resolve)
+      pundit_policy_scope(scope, method)
     end
   end
 end

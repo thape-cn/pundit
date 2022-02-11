@@ -93,6 +93,10 @@ RSpec.describe Pundit do
       expect(Pundit.policy_scope(user, Post)).to eq :published
     end
 
+    it "returns an instantiated policy scope given the method to call on the scope" do
+      expect(Pundit.policy_scope(user, Post, :unpublished)).to eq :unpublished
+    end
+
     it "returns an instantiated policy scope given an active model class" do
       expect(Pundit.policy_scope(user, Comment)).to eq CommentScope.new(Comment)
     end
@@ -137,6 +141,10 @@ RSpec.describe Pundit do
   describe ".policy_scope!" do
     it "returns an instantiated policy scope given a plain model class" do
       expect(Pundit.policy_scope!(user, Post)).to eq :published
+    end
+
+    it "returns an instantiated policy scope given the method to call on the scope" do
+      expect(Pundit.policy_scope!(user, Post, :unpublished)).to eq :unpublished
     end
 
     it "returns an instantiated policy scope given an active model class" do

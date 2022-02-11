@@ -87,11 +87,12 @@ module Pundit
     #
     # @see https://github.com/varvet/pundit#scopes
     # @param scope [Object] the object we're retrieving the policy scope for
+    # @param method [Symbol] the method to call on the scope. Defaults to :resolve.
     # @param policy_scope_class [Class] the policy scope class we want to force use of
     # @return [Scope{#resolve}, nil] instance of scope class which can resolve to a scope
-    def policy_scope(scope, policy_scope_class: nil)
+    def policy_scope(scope, method = :resolve, policy_scope_class: nil)
       @_pundit_policy_scoped = true
-      policy_scope_class ? policy_scope_class.new(pundit_user, scope).resolve : pundit_policy_scope(scope)
+      policy_scope_class ? policy_scope_class.new(pundit_user, scope).public_send(method) : pundit_policy_scope(scope, method)
     end
 
     # Retrieves the policy for the given record.
@@ -161,8 +162,11 @@ module Pundit
 
     private
 
-    def pundit_policy_scope(scope)
-      policy_scopes[scope] ||= Pundit.policy_scope!(pundit_user, scope)
+    def pundit_policy_scope(scope, method = :resolve)
+      method = method.to_sym
+      key    = method == :resolve ? scope : [scope, method]
+
+      policy_scopes[key] ||= Pundit.policy_scope!(pundit_user, scope, method)
     end
   end
 end
