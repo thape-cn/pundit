@@ -11,6 +11,10 @@ class Post
     :published
   end
 
+  def self.unpublished
+    :unpublished
+  end
+
   def self.read
     :read
   end

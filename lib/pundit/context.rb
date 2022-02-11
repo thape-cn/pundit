@@ -103,10 +103,11 @@ module Pundit
     #
     # @see https://github.com/varvet/pundit#scopes
     # @param scope [Object] the object we're retrieving the policy scope for
+    # @param method [Symbol] the method to call on the scope. Defaults to :resolve.
     # @raise [InvalidConstructorError] if the policy constructor called incorrectly
     # @return [Scope{#resolve}, nil] instance of scope class which can resolve to a scope
     # @since v2.3.2
-    def policy_scope(scope)
+    def policy_scope(scope, method = :resolve)
       policy_scope_class = policy_finder(scope).scope
       return unless policy_scope_class
 
@@ -116,18 +117,19 @@ module Pundit
         raise InvalidConstructorError, "Invalid #<#{policy_scope_class}> constructor is called"
       end
 
-      policy_scope.resolve
+      policy_scope.public_send(method)
     end
 
     # Retrieves the policy scope for the given record. Raises if not found.
     #
     # @see https://github.com/varvet/pundit#scopes
     # @param scope [Object] the object we're retrieving the policy scope for
+    # @param method [Symbol] the method to call on the scope. Defaults to :resolve.
     # @raise [NotDefinedError] if the policy scope cannot be found
     # @raise [InvalidConstructorError] if the policy constructor called incorrectly
     # @return [Scope{#resolve}] instance of scope class which can resolve to a scope
     # @since v2.3.2
-    def policy_scope!(scope)
+    def policy_scope!(scope, method = :resolve)
       policy_scope_class = policy_finder(scope).scope!
 
       begin
@@ -136,7 +138,7 @@ module Pundit
         raise InvalidConstructorError, "Invalid #<#{policy_scope_class}> constructor is called"
       end
 
-      policy_scope.resolve
+      policy_scope.public_send(method)
     end
 
     # @!endgroup

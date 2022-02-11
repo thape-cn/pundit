@@ -9,8 +9,8 @@ module Pundit
   module Helper
     # @see Pundit::Authorization#pundit_policy_scope
     # @since v1.0.0
-    def policy_scope(scope)
-      pundit_policy_scope(scope)
+    def policy_scope(scope, method = :resolve)
+      pundit_policy_scope(scope, method)
     end
   end
 end

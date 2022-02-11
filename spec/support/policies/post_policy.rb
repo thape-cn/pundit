@@ -5,6 +5,10 @@ class PostPolicy < BasePolicy
     def resolve
       scope.published
     end
+
+    def unpublished
+      scope.unpublished
+    end
   end
 
   alias_method :post, :record
