@@ -14,5 +14,11 @@ RSpec.describe Pundit::Helper do
       expect(scoped).to be(Post.published)
       expect(controller).not_to be_pundit_policy_scoped
     end
+
+    it "forwards the provided method to pundit_policy_scope" do
+      expect(view).to receive(:pundit_policy_scope).with(Post, :unpublished).and_return(:unpublished)
+
+      expect(view.policy_scope(Post, :unpublished)).to eq :unpublished
+    end
   end
 end

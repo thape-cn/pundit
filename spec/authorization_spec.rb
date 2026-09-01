@@ -149,10 +149,6 @@ RSpec.describe Pundit::Authorization do
       expect(policy.post).to eq post
     end
 
-    it "returns an instantiated policy scope when a scope method is provided" do
-      expect(controller.policy_scope(Post, :unpublished)).to eq :unpublished
-    end
-
     it "throws an exception if the given policy can't be found" do
       expect { controller.policy(article) }.to raise_error(Pundit::NotDefinedError)
     end
@@ -191,8 +187,37 @@ RSpec.describe Pundit::Authorization do
       expect(controller.policy_scope(Post)).to eq :published
     end
 
+    it "calls the provided method on the policy scope" do
+      expect(controller.policy_scope(Post, :unpublished)).to eq :unpublished
+    end
+
     it "allows policy scope class to be overridden" do
       expect(controller.policy_scope(Post, policy_scope_class: PublicationPolicy::Scope)).to eq :published
+    end
+
+    it "calls the provided method on an overridden policy scope class" do
+      policy_scope_class = Class.new do
+        def initialize(user, scope)
+          @user = user
+          @scope = scope
+        end
+
+        def unpublished
+          [@user, @scope]
+        end
+      end
+
+      expect(controller.policy_scope(Post, :unpublished, policy_scope_class: policy_scope_class)).to eq [user, Post]
+    end
+
+    it "caches each policy scope method separately" do
+      expect(Post).to receive(:published).once.and_return(:published)
+      expect(Post).to receive(:unpublished).once.and_return(:unpublished)
+
+      expect(controller.policy_scope(Post)).to eq :published
+      expect(controller.policy_scope(Post, :unpublished)).to eq :unpublished
+      expect(controller.policy_scope(Post)).to eq :published
+      expect(controller.policy_scope(Post, :unpublished)).to eq :unpublished
     end
 
     it "throws an exception if the given policy can't be found" do
